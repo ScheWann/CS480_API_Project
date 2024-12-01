@@ -1,1 +1,2 @@
-# CS480_API_Project
+# CS480 API Project
+2024 Fall CS480 API Project
