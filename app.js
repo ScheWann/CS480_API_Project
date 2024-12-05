@@ -20,7 +20,7 @@ const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // return all columns for the actor table
-app.get("/actors", (req, res) => {
+app.get("/api/v1/actors", (req, res) => {
     pool.query("DESCRIBE actor", (err, results) => {
         if (err) {
             console.error("Error querying database:", err);
@@ -40,7 +40,7 @@ app.get("/actors", (req, res) => {
 });
 
 // return all columns for the customer table
-app.get("/customers", (req, res) => {
+app.get("/api/v1/customers", (req, res) => {
     pool.query("DESCRIBE customer", (err, results) => {
         if (err) {
             console.error("Error querying database:", err);
@@ -60,7 +60,7 @@ app.get("/customers", (req, res) => {
 });
 
 // return all columns for the store table
-app.get("/stores", (req, res) => {
+app.get("/api/v1/stores", (req, res) => {
     pool.query("DESCRIBE store", (err, results) => {
         if (err) {
             console.error("Error querying database:", err);
@@ -80,7 +80,7 @@ app.get("/stores", (req, res) => {
 });
 
 // return all columns for the film table
-app.get("/films", (req, res) => {
+app.get("/api/v1/films", (req, res) => {
     const query = req.query.query;
 
     if (query) {
@@ -122,7 +122,7 @@ app.get("/films", (req, res) => {
 });
 
 // Return a specific actor by ID
-app.get("/actors/:id", (req, res) => {
+app.get("/api/v1/actors/:id", (req, res) => {
     const { id } = req.params;
     pool.query("SELECT * FROM actor WHERE actor_id = ?", [id], (err, results) => {
         if (err) {
@@ -145,7 +145,7 @@ app.get("/actors/:id", (req, res) => {
 });
 
 // Return a specific film by ID
-app.get("/films/:id", (req, res) => {
+app.get("/api/v1/films/:id", (req, res) => {
     const { id } = req.params;
     pool.query("SELECT * FROM film WHERE film_id = ?", [id], (err, results) => {
         if (err) {
@@ -168,7 +168,7 @@ app.get("/films/:id", (req, res) => {
 });
 
 // Return a specific store by ID
-app.get("/stores/:id", (req, res) => {
+app.get("/api/v1/stores/:id", (req, res) => {
     const { id } = req.params;
     pool.query("SELECT * FROM store WHERE store_id = ?", [id], (err, results) => {
         if (err) {
@@ -191,7 +191,7 @@ app.get("/stores/:id", (req, res) => {
 });
 
 // Return a specific customer by ID
-app.get("/customers/:id", (req, res) => {
+app.get("/api/v1/customers/:id", (req, res) => {
     const { id } = req.params;
     pool.query("SELECT * FROM customer WHERE customer_id = ?", [id], (err, results) => {
         if (err) {
@@ -214,7 +214,7 @@ app.get("/customers/:id", (req, res) => {
 });
 
 // Return all films for a specified actor
-app.get("/actors/:id/films", (req, res) => {
+app.get("/api/v1/actors/:id/films", (req, res) => {
     const { id } = req.params;
 
     // SQL query to retrieve all films for the specified actor
@@ -246,7 +246,7 @@ app.get("/actors/:id/films", (req, res) => {
 });
 
 // Return all actors for a specified film
-app.get("/films/:id/actors", (req, res) => {
+app.get("/api/v1/films/:id/actors", (req, res) => {
     const { id } = req.params;
 
     // SQL query to retrieve all actors for the specified film
@@ -278,7 +278,7 @@ app.get("/films/:id/actors", (req, res) => {
 });
 
 // Return film details from the film_list view for the specified film
-app.get("/films/:id/detail", (req, res) => {
+app.get("/api/v1/films/:id/detail", (req, res) => {
     const { id } = req.params;
 
     const sql = `
@@ -308,7 +308,7 @@ app.get("/films/:id/detail", (req, res) => {
 });
 
 // Return customer details from the customer_list view for the specified customer
-app.get("/customers/:id/detail", (req, res) => {
+app.get("/api/v1/customers/:id/detail", (req, res) => {
     const { id } = req.params;
 
     // SQL query to retrieve customer details from the customer_list view
@@ -339,7 +339,7 @@ app.get("/customers/:id/detail", (req, res) => {
 });
 
 // Return actor details from the actor_info view for the specified actor
-app.get("/actors/:id/detail", (req, res) => {
+app.get("/api/v1/actors/:id/detail", (req, res) => {
     const { id } = req.params;
 
     // SQL query to retrieve actor details from the actor_info view
@@ -370,7 +370,7 @@ app.get("/actors/:id/detail", (req, res) => {
 });
 
 // Return inventory ids in stock for a specified film and store using the film_in_stock stored procedure
-app.get("/inventory-in-stock/:film_id/:store_id", (req, res) => {
+app.get("/api/v1/inventory-in-stock/:film_id/:store_id", (req, res) => {
     const { film_id, store_id } = req.params;
 
     // SQL query to call the stored procedure `film_in_stock`
@@ -408,7 +408,7 @@ async function MovieRun() {
         const db = client.db("sample_mflix");
         const moviesCollection = db.collection("movies");
 
-        app.get("/movies", async (req, res) => {
+        app.get("/api/v1/movies", async (req, res) => {
             const filters = {};
 
             // Optional query parameters for filtering
@@ -455,7 +455,7 @@ async function ColorRun() {
         const colorsCollection = db.collection("colors");
 
         // 1. GET /colors - Return all fields for all documents
-        app.get("/colors", async (req, res) => {
+        app.get("/api/v1/colors", async (req, res) => {
             try {
                 const colors = await colorsCollection.find().toArray();
                 res.status(200).json(colors);
@@ -469,7 +469,7 @@ async function ColorRun() {
         });
 
         // 2. POST /colors - Insert a new item, return the result
-        app.post("/colors", async (req, res) => {
+        app.post("/api/v1/colors", async (req, res) => {
             const newColor = req.body;
 
             try {
@@ -489,7 +489,7 @@ async function ColorRun() {
         });
 
         // 3. GET /colors/<id> - Return all fields for the specified document
-        app.get("/colors/:id", async (req, res) => {
+        app.get("/api/v1/colors/:id", async (req, res) => {
             const { id } = req.params;
             const objectId = new ObjectId(id); // Ensure you use `new ObjectId(id)` to instantiate
 
@@ -510,7 +510,7 @@ async function ColorRun() {
         });
 
         // 4. PUT /colors/<id> - Update the specified document, return result
-        app.put("/colors/:id", async (req, res) => {
+        app.put("/api/v1/colors/:id", async (req, res) => {
             const { id } = req.params;
             const objectId = new ObjectId(id); // Again, ensure proper instantiation of ObjectId
             const updatedColor = req.body;
@@ -538,7 +538,7 @@ async function ColorRun() {
         });
 
         // 5. DELETE /colors/<id> - Delete the specified document, return result
-        app.delete("/colors/:id", async (req, res) => {
+        app.delete("/api/v1/colors/:id", async (req, res) => {
             const { id } = req.params;
             const objectId = new ObjectId(id);
 
