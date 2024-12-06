@@ -1,10 +1,9 @@
 const express = require("express");
 const mysql = require("mysql2");
 const { MongoClient, ObjectId } = require("mongodb");
-require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 
 // Create a connection pool
 const pool = mysql.createPool({
