@@ -431,6 +431,8 @@ async function ColorRun() {
 
         const db = client.db("cs480-project2");
         const colorsCollection = db.collection("colors");
+        
+        app.use(express.json());
 
         // 1. GET /colors - Return all fields for all documents
         app.get("/api/v1/colors", async (req, res) => {
@@ -449,10 +451,9 @@ async function ColorRun() {
         // 2. POST /colors - Insert a new item, return the result
         app.post("/api/v1/colors", async (req, res) => {
             const newColor = req.body;
-
             try {
                 const result = await colorsCollection.insertOne(newColor);
-                res.status(201).json({
+                res.status(200).json({
                     message: "Color added successfully",
                     insertedId: result.insertedId,
                     color: newColor,
