@@ -274,10 +274,7 @@ app.get("/api/v1/films/:id/detail", (req, res) => {
                 error: "Film not found in film_list",
             });
         } else {
-            res.status(200).json({
-                status: "success",
-                film_details: results[0],
-            });
+            res.status(200).json(results[0]);
         }
     });
 });
@@ -305,10 +302,7 @@ app.get("/api/v1/customers/:id/detail", (req, res) => {
                 error: "Customer not found in customer_list",
             });
         } else {
-            res.status(200).json({
-                status: "success",
-                customer_details: results[0],
-            });
+            res.status(200).json(results[0]);
         }
     });
 });
@@ -336,10 +330,7 @@ app.get("/api/v1/actors/:id/detail", (req, res) => {
                 error: "Actor not found in actor_info",
             });
         } else {
-            res.status(200).json({
-                status: "success",
-                actor_details: results[0],
-            });
+            res.status(200).json(results[0]);
         }
     });
 });
@@ -349,7 +340,7 @@ app.get("/api/v1/inventory-in-stock/:film_id/:store_id", (req, res) => {
     const { film_id, store_id } = req.params;
 
     // SQL query to call the stored procedure `film_in_stock`
-    const sql = "CALL film_in_stock(?, ?)";
+    const sql = "CALL film_in_stock(?, ?, @count)";
 
     pool.query(sql, [film_id, store_id], (err, results) => {
         if (err) {
@@ -363,11 +354,7 @@ app.get("/api/v1/inventory-in-stock/:film_id/:store_id", (req, res) => {
                 error: "No inventory found for the specified film and store",
             });
         } else {
-            const inventoryIds = results[0].map((row) => row.inventory_id);
-            res.status(200).json({
-                status: "success",
-                inventory_ids: inventoryIds,
-            });
+            res.status(200).json(results[0]);
         }
     });
 });
@@ -430,7 +417,7 @@ async function ColorRun() {
 
         const db = client.db("cs480-project2");
         const colorsCollection = db.collection("colors");
-        
+
         app.use(express.json());
 
         // 1. GET /colors - Return all fields for all documents
